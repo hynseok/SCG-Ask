@@ -1,0 +1,108 @@
+name: deploy
+
+on:
+  push:
+    branches: ["master"]
+env:
+  frontend_dockerimage_tag: ${{ github.sha }}-frontend
+  backend_dockerimage_tag: ${{ github.sha }}-backend
+  frontend_dockerimage_name: scgskku/ask-fe
+  backend_dockerimage_name: scgskku/ask-be
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: --------------- Code Repo ---------------
+        run: echo "Code Repo"
+      - name: Code Repo 불러오기
+        uses: actions/checkout@v4
+
+      - name: Docker 준비(1/4) - 메타데이터 생성 (Frontend)
+        id: meta-frontend
+        uses: docker/metadata-action@v5.5.1
+        with:
+          images: |
+            ${{ env.frontend_dockerimage_name }}
+          tags: |
+            ${{ env.frontend_dockerimage_tag }}
+            latest
+          flavor: |
+            latest=true
+
+      - name: Docker 준비(1/4) - 메타데이터 생성 (Backend)
+        id: meta-backend
+        uses: docker/metadata-action@v5.5.1
+        with:
+          images: |
+            ${{ env.backend_dockerimage_name }}
+          tags: |
+            ${{ env.backend_dockerimage_tag }}
+            latest
+          flavor: |
+            latest=true
+
+      - name: Docker 준비(2/4) - QEMU 설정
+        uses: docker/setup-qemu-action@v3
+
+      - name: Docker 준비(3/4) - buildx 설정
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker 준비(4/4) - 레지스트리 로그인
+        uses: docker/login-action@v3.0.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCkER_PASSWORD }}
+
+      - name: Docker 빌드 및 푸시 (Frontend)
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ steps.meta-frontend.outputs.tags }}
+
+      - name: Docker 빌드 및 푸시 (Backend)
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ steps.meta-backend.outputs.tags }}
+
+      - name: --------------- Config Repo ---------------
+        run: echo "[Config Repo]"
+      - name: Config Repo 불러오기
+        uses: actions/checkout@v4
+        with:
+          repository: SystemConsultantGroup/SCG-Ask
+          ref: master
+          token: ${{ secrets.ACTION_TOKEN }}
+          path: SCG-Ask
+
+      - name: Kustomize 준비
+        uses: imranismail/setup-kustomize@v2.0.0
+
+      - name: Config Repo 이미지 값 업데이트 (Frontend)
+        run: |
+          cd SCG-Ask/deployment/overlays/prod/fe/
+          kustomize edit set image ${{ env.frontend_dockerimage_name }}:${{ env.frontend_dockerimage_tag }}
+          cat kustomization.yaml
+
+      - name: Config Repo 이미지 값 업데이트 (Backend)
+        run: |
+          cd SCG-Ask/deployment/overlays/prod/be/
+          kustomize edit set image ${{ env.backend_dockerimage_name }}:${{ env.backend_dockerimage_tag }}
+          cat kustomization.yaml
+
+      - name: Config Repo 변경사항 푸시
+        run: |
+          cd SCG-Ask
+          git config --global user.email "wefwef12e@naver.com"
+          git config --global user.name "hynseok"
+          git commit -am "Update image tag"
+          git push -u origin master
+      - name: --------------- Clean Up ---------------
+        run: echo "Clean Up"
