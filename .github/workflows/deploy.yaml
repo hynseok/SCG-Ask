@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    path-ignore:
+      - 'deployment/**'
 env:
   frontend_dockerimage_tag: ${{ github.sha }}-frontend
   backend_dockerimage_tag: ${{ github.sha }}-backend
