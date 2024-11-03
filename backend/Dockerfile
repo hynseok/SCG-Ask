@@ -6,8 +6,7 @@ COPY Cargo.toml Cargo.lock ./
 RUN cargo fetch
 
 COPY . .
-RUN cargo build --release
-
+RUN RUSTFLAGS='-C target-feature=+crt-static' cargo build --release
 
 FROM alpine:latest
 
