@@ -38,6 +38,15 @@ jobs:
             latest
           flavor: |
             latest=true
+            
+      - name: 현재 디렉토리 확인
+        run: pwd
+
+      - name: 현재 디렉토리의 파일 목록 확인
+        run: ls -al
+
+      - name: frontend 디렉토리의 파일 목록 확인
+        run: ls -al ./frontend
 
       - name: Docker 준비(2/4) - QEMU 설정 (Frontend)
         uses: docker/setup-qemu-action@v2
