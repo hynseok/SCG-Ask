@@ -73,7 +73,8 @@ jobs:
         uses: actions/checkout@v4
       - name: 폴더 이동
         run: cd backend
-
+      - name: 폴더 이동
+        run: cd backend
       - name: 폴더 확인
         run: ls -al
 
