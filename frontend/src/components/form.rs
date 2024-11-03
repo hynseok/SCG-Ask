@@ -1,7 +1,9 @@
+use serde::Serialize;
+use yew::format::{Json, Nothing};
 use yew::prelude::*;
 use yew::services::fetch::{FetchService, FetchTask, Request, Response};
-use yew::format::{Json, Nothing};
-use serde::Serialize;
+
+use crate::get_env_var;
 
 #[derive(Serialize)]
 struct FormData {
@@ -59,26 +61,26 @@ impl Component for Form {
             Msg::Submit => {
                 self.loading = true;
 
+                let api_url = get_env_var("API_URL").expect("API_URL not set");
+
                 let form_data = FormData {
                     name: self.name.clone(),
                     email: self.email.clone(),
                     content: self.content.clone(),
                 };
 
-                let request = Request::post(std::env::var("API_ENDPOINT").expect("API_ENDPOINT must be set."))
+                let request = Request::post(api_url)
                     .header("Content-Type", "application/json; charset=utf-8")
                     .body(Json(&form_data))
                     .expect("Could not build request.");
 
-                let callback = self.link.callback(
-                    |response: Response<Nothing>| {
-                        if response.status().is_success() {
-                            Msg::Response(Ok(()))
-                        } else {
-                            Msg::Response(Err(anyhow::anyhow!("Request failed")))
-                        }
-                    },
-                );
+                let callback = self.link.callback(|response: Response<Nothing>| {
+                    if response.status().is_success() {
+                        Msg::Response(Ok(()))
+                    } else {
+                        Msg::Response(Err(anyhow::anyhow!("Request failed")))
+                    }
+                });
 
                 let task = FetchService::fetch(request, callback).expect("Failed to start request");
                 self.fetch_task = Some(task);
