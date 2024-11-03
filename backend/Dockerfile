@@ -15,4 +15,6 @@ RUN apk add --no-cache openssl3 libgcc libstdc++ ca-certificates
 
 COPY --from=builder /usr/src/backend/target/release/backend /usr/local/bin/backend
 
-CMD ["backend"]
+RUN chmod +x /usr/local/bin/backend
+
+CMD ["/usr/local/bin/backend"]
