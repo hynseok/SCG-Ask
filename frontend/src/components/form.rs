@@ -61,15 +61,13 @@ impl Component for Form {
             Msg::Submit => {
                 self.loading = true;
 
-                let api_url = get_env_var("API_URL").expect("API_URL not set");
-
                 let form_data = FormData {
                     name: self.name.clone(),
                     email: self.email.clone(),
                     content: self.content.clone(),
                 };
 
-                let request = Request::post(api_url)
+                let request = Request::post(get_env_var("API_URL").expect("API_URL not set"))
                     .header("Content-Type", "application/json; charset=utf-8")
                     .body(Json(&form_data))
                     .expect("Could not build request.");
