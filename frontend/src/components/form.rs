@@ -3,8 +3,6 @@ use yew::format::{Json, Nothing};
 use yew::prelude::*;
 use yew::services::fetch::{FetchService, FetchTask, Request, Response};
 
-use crate::get_api_url;
-
 #[derive(Serialize)]
 struct FormData {
     name: String,
@@ -67,7 +65,7 @@ impl Component for Form {
                     content: self.content.clone(),
                 };
 
-                let request = Request::post(get_api_url())
+                let request = Request::post("https://ask.scg.skku.ac.kr/v1/send")
                     .header("Content-Type", "application/json; charset=utf-8")
                     .body(Json(&form_data))
                     .expect("Could not build request.");

@@ -1,12 +1,9 @@
 // src/lib.rs
 mod app;
 mod components;
-mod env;
 mod pages;
 mod route;
-mod build;
 
-use env::*;
 use wasm_bindgen::prelude::*;
 use yew::prelude::*;
 
