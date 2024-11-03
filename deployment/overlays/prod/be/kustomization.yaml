@@ -14,4 +14,4 @@ patches:
     name: be-ingress
 images:
 - name: scgskku/ask-be
-  newTag: 402b55bf215657dca8c06f8f0f8a0a4c6eb1f215-backend
+  newTag: 244f1278736c94e860c49a107945183cfa60f270-backend
