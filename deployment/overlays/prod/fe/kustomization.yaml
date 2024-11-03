@@ -9,6 +9,8 @@ patches:
 images:
 - name: scgskku/ask-fe
   newTag: ver1
+- name: scgskku/frontend
+  newTag: f3f77e163514c298f01429f4358402fc9e2dcbfe-frontend
 resources:
 - ../../../base/fe
 - secret.yaml
