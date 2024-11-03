@@ -15,5 +15,3 @@ patches:
 images:
 - name: scgskku/ask-be
   newTag: 10e4a91101b0a50efbf09ff2c5889f4fc2b7d18a-backend
-- name: scgskku/backend
-  newTag: f3f77e163514c298f01429f4358402fc9e2dcbfe-backend
