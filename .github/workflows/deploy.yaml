@@ -25,7 +25,7 @@ jobs:
       - name: Code Repo 불러오기 (Frontend)
         uses: actions/checkout@v4
         with:
-          repository: SystemConsultantGroup/SCG-Ask/frontend
+          repository: SystemConsultantGroup/SCG-Ask/tree/master/frontend
           ref: master
           token: ${{ secrets.ACTION_TOKEN }}
 
@@ -74,7 +74,7 @@ jobs:
       - name: Code Repo 불러오기 (Backend)
         uses: actions/checkout@v4
         with:
-          repository: SystemConsultantGroup/SCG-Ask/backend
+          repository: SystemConsultantGroup/SCG-Ask/tree/master/backend
           ref: master
           token: ${{ secrets.ACTION_TOKEN }}
 
