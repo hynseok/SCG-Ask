@@ -4,6 +4,7 @@ mod components;
 mod env;
 mod pages;
 mod route;
+mod build;
 
 use env::*;
 use wasm_bindgen::prelude::*;
