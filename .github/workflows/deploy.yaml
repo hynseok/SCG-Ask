@@ -24,8 +24,10 @@ jobs:
         run: echo "Code Repo (Frontend)"
       - name: Code Repo 불러오기 (Frontend)
         uses: actions/checkout@v4
-      - name: 폴더 이동
-        run: cd frontend
+        with:
+          repository: SystemConsultantGroup/SCG-Ask/frontend
+          ref: master
+          token: ${{ secrets.ACTION_TOKEN }}
 
       - name: Docker 준비(1/4) - 메타데이터 생성 (Frontend)
         id: meta-frontend
@@ -71,12 +73,10 @@ jobs:
         run: echo "Code Repo (Backend)"
       - name: Code Repo 불러오기 (Backend)
         uses: actions/checkout@v4
-      - name: 폴더 이동
-        run: cd backend
-      - name: 폴더 이동
-        run: cd backend
-      - name: 폴더 확인
-        run: ls -al
+        with:
+          repository: SystemConsultantGroup/SCG-Ask/backend
+          ref: master
+          token: ${{ secrets.ACTION_TOKEN }}
 
       - name: Docker 준비(1/4) - 메타데이터 생성 (Backend)
         id: meta-backend
