@@ -29,6 +29,9 @@ jobs:
           ref: master
           token: ${{ secrets.ACTION_TOKEN }}
 
+      - name: frontend 소스 복사
+        run: cp -r frontend/* .
+        
       - name: Docker 준비(1/4) - 메타데이터 생성 (Frontend)
         id: meta-frontend
         uses: docker/metadata-action@v5.5.1
@@ -61,7 +64,6 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ steps.meta-frontend.outputs.tags }}
-        working-directory: frontend
 
   build-backend:
     runs-on: ubuntu-latest
@@ -78,6 +80,9 @@ jobs:
           repository: SystemConsultantGroup/SCG-Ask
           ref: master
           token: ${{ secrets.ACTION_TOKEN }}
+
+      - name: backend 소스 복사
+        run: cp -r backend/* .
 
       - name: Docker 준비(1/4) - 메타데이터 생성 (Backend)
         id: meta-backend
@@ -111,7 +116,6 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ steps.meta-backend.outputs.tags }}
-        working-directory: backend
 
   deploy:
     runs-on: ubuntu-latest
