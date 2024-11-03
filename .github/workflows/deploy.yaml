@@ -2,27 +2,30 @@ name: deploy
 
 on:
   push:
-    branches: ["master"]
-    path-ignore:
-      - "deployment/**"
+    branches:
+      - master
+    paths-ignore:
+      - 'deployment/**'
 env:
   frontend_dockerimage_tag: ${{ github.sha }}-frontend
   backend_dockerimage_tag: ${{ github.sha }}-backend
-  frontend_dockerimage_name: scgskku/ask-fe
-  backend_dockerimage_name: scgskku/ask-be
+  frontend_dockerimage_name: scgskku/frontend
+  backend_dockerimage_name: scgskku/backend
 
 jobs:
-  build:
+  build-frontend:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
       id-token: write
     steps:
-      - name: --------------- Code Repo ---------------
-        run: echo "Code Repo"
-      - name: Code Repo 불러오기
+      - name: --------------- Code Repo (Frontend) ---------------
+        run: echo "Code Repo (Frontend)"
+      - name: Code Repo 불러오기 (Frontend)
         uses: actions/checkout@v4
+        with:
+          path: frontend
 
       - name: Docker 준비(1/4) - 메타데이터 생성 (Frontend)
         id: meta-frontend
@@ -35,6 +38,40 @@ jobs:
             latest
           flavor: |
             latest=true
+
+      - name: Docker 준비(2/4) - QEMU 설정 (Frontend)
+        uses: docker/setup-qemu-action@v2
+
+      - name: Docker 준비(3/4) - 빌더 설정 (Frontend)
+        uses: docker/setup-buildx-action@v2
+
+      - name: Docker 준비(4/4) - 로그인 (Frontend)
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Docker 빌드 및 푸시 (Frontend)
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta-frontend.outputs.tags }}
+
+  build-backend:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: --------------- Code Repo (Backend) ---------------
+        run: echo "Code Repo (Backend)"
+      - name: Code Repo 불러오기 (Backend)
+        uses: actions/checkout@v4
+        with:
+          path: backend
+
       - name: Docker 준비(1/4) - 메타데이터 생성 (Backend)
         id: meta-backend
         uses: docker/metadata-action@v5.5.1
@@ -46,32 +83,30 @@ jobs:
             latest
           flavor: |
             latest=true
-      - name: Docker 준비(2/4) - QEMU 설정
-        uses: docker/setup-qemu-action@v3
 
-      - name: Docker 준비(3/4) - buildx 설정
-        uses: docker/setup-buildx-action@v3
+      - name: Docker 준비(2/4) - QEMU 설정 (Backend)
+        uses: docker/setup-qemu-action@v2
 
-      - name: Docker 준비(4/4) - 레지스트리 로그인
-        uses: docker/login-action@v3.0.0
+      - name: Docker 준비(3/4) - 빌더 설정 (Backend)
+        uses: docker/setup-buildx-action@v2
+
+      - name: Docker 준비(4/4) - 로그인 (Backend)
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCkER_PASSWORD }}
-
-      - name: Docker 빌드 및 푸시 (Frontend)
-        uses: docker/build-push-action@v4
-        with:
-          context: ./frontend
-          push: true
-          tags: ${{ steps.meta-frontend.outputs.tags }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Docker 빌드 및 푸시 (Backend)
         uses: docker/build-push-action@v4
         with:
-          context: ./backend
+          context: .
           push: true
           tags: ${{ steps.meta-backend.outputs.tags }}
 
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build-frontend, build-backend]
+    steps:
       - name: --------------- Config Repo ---------------
         run: echo "[Config Repo]"
       - name: Config Repo 불러오기
@@ -100,7 +135,7 @@ jobs:
           cd SCG-Ask
           git config --global user.email "wefwef12e@naver.com"
           git config --global user.name "hynseok"
-          git commit -am "Update image tag"
+          git commit -am "infra: Update image tag"
           git push -u origin master
       - name: --------------- Clean Up ---------------
         run: echo "Clean Up"
