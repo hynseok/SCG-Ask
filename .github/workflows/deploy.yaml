@@ -55,7 +55,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./frontend
-          file: ./frontend/Dockerfile
+          file: Dockerfile
           platforms: linux/amd64
           push: true
           tags: ${{ steps.meta-frontend.outputs.tags }}
@@ -102,7 +102,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./backend
-          file: ./backend/Dockerfile
+          file: Dockerfile
           platforms: linux/amd64
           push: true
           tags: ${{ steps.meta-backend.outputs.tags }}
