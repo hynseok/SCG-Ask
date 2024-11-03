@@ -54,8 +54,8 @@ jobs:
       - name: Docker 빌드 및 푸시 (Frontend)
         uses: docker/build-push-action@v4
         with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
+          context: frontend
+          file: Dockerfile
           push: true
           tags: ${{ steps.meta-frontend.outputs.tags }}
 
@@ -100,8 +100,8 @@ jobs:
       - name: Docker 빌드 및 푸시 (Backend)
         uses: docker/build-push-action@v4
         with:
-          context: ./backend
-          file: ./backend/Dockerfile
+          context: backend
+          file: Dockerfile
           push: true
           tags: ${{ steps.meta-backend.outputs.tags }}
 
