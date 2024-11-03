@@ -1,4 +1,4 @@
-FROM rust:latest as builder
+FROM rust:latest AS builder
 
 WORKDIR /usr/src/backend
 
@@ -6,7 +6,7 @@ COPY Cargo.toml Cargo.lock ./
 RUN cargo fetch
 
 COPY . .
-RUN RUSTFLAGS='-C target-feature=+crt-static' cargo build --release
+RUN cargo build --release
 
 FROM alpine:latest
 
