@@ -12,8 +12,10 @@ FROM alpine:latest
 
 RUN apk add --no-cache openssl3 libgcc libstdc++ ca-certificates
 
-COPY --from=builder /usr/src/backend/target/release/backend /usr/local/bin/backend
+COPY --from=builder /usr/src/backend/target/release/backend .
 
-RUN chmod +x /usr/local/bin/backend
+RUN chmod +x ./backend
 
-CMD ["/usr/local/bin/backend"]
+EXPOSE 8000
+
+CMD ["./backend"]
