@@ -8,14 +8,6 @@ RUN cargo fetch
 COPY . .
 RUN cargo build --release
 
-FROM alpine:latest
-
-RUN apk add --no-cache openssl3 libgcc libstdc++ ca-certificates
-
-COPY --from=builder /usr/src/backend/target/release/backend .
-
-RUN chmod +x ./backend
-
 EXPOSE 8000
 
-CMD ["./backend"]
+CMD ["cargo", "run", "--release"]
