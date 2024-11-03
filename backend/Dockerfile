@@ -9,12 +9,12 @@ COPY . .
 RUN cargo build --release
 
 
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
-    openssl=3.0.* \
+    openssl \
     libssl-dev \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
