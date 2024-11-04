@@ -1,4 +1,3 @@
-use crate::config::get_configuration;
 use crate::routes::*;
 use actix_cors::Cors;
 use actix_web::middleware::Logger;
@@ -7,7 +6,6 @@ use actix_web::{web, App, HttpServer};
 use std::net::TcpListener;
 
 pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
-    let config = get_configuration().expect("Failed to read configuration.");
     let server = HttpServer::new(move || {
         App::new()
             .wrap(
@@ -23,11 +21,11 @@ pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
             )
             .wrap(Logger::default())
             .route(
-                &format!("{}/health_check", config.api_version),
+                "/health_check",
                 web::get().to(health_check),
             )
             .route(
-                &format!("{}/send", config.api_version),
+                "/send",
                 web::post().to(send),
             )
     })

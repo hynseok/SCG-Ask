@@ -1,6 +1,5 @@
 #[derive(serde::Deserialize)]
 pub struct Settings {
-    pub api_version: String,
     pub application_port: u16,
 }
 
