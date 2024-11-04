@@ -8,7 +8,7 @@ patches:
     name: fe-ingress
 images:
 - name: scgskku/ask-fe
-  newTag: 05671f54eeffd901fc1b167fd85331730d5865b4-frontend
+  newTag: 1c317de5c8b19ed4f04b0bc39b5617d98d28c65b-frontend
 resources:
 - ../../../base/fe
 - secret.yaml
