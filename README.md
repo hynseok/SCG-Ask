@@ -17,7 +17,6 @@ scg cs(customer service) website, 토이프로젝트처럼 진행해 봤습니�
 
 ```
 cd ./backend
-cargo install
 cargo run
 ```
 
@@ -26,7 +25,7 @@ cargo run
 * yew
 ```
 cd ./frontend
-cargo install
+cargo make build
 cargo make serve
 ```
 
